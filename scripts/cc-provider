@@ -140,6 +140,14 @@ Notes:
 - Kimi API credentials were removed from active local env to avoid auth conflicts.
 - If needed, run: claude /login
 MSG
+
+  if [[ -n "${ANTHROPIC_API_KEY:-}" ]]; then
+    cat <<WARN
+Warning:
+- Current shell still exports ANTHROPIC_API_KEY.
+- For pure claude.ai flow, run: unset ANTHROPIC_API_KEY
+WARN
+  fi
 }
 
 switch_to_kimi() {
@@ -211,6 +219,7 @@ status() {
   local toolsearch_allow
   local toolsearch_deny
   local profile="unknown"
+  local shell_api_key="no"
 
   model="$(jq -r '.model // "unset"' "$SETTINGS_FILE")"
   base_url="$(jq -r '.env.ANTHROPIC_BASE_URL // empty' "$LOCAL_FILE")"
@@ -224,12 +233,17 @@ status() {
     profile="claude"
   fi
 
+  if [[ -n "${ANTHROPIC_API_KEY:-}" ]]; then
+    shell_api_key="yes"
+  fi
+
   cat <<MSG
 Provider Status
 - Active profile guess: $profile
 - model: $model
 - base_url present: $( [[ -n "$base_url" ]] && echo yes || echo no )
 - api key present in active env: $has_api_key
+- shell ANTHROPIC_API_KEY exported: $shell_api_key
 - ToolSearch allowed: $toolsearch_allow
 - ToolSearch denied: $toolsearch_deny
 - settings: $SETTINGS_FILE
