@@ -21,7 +21,9 @@
       </a>
     </td>
     <td align="center" width="120">
-      <img src="assets/logos/ollama.svg" alt="Ollama Logo" width="44" height="44" />
+      <a href="https://ollama.com">
+        <img src="assets/logos/ollama.svg" alt="Ollama Logo" width="44" height="44" />
+      </a>
     </td>
   </tr>
   <tr>
