@@ -6,21 +6,13 @@
 </p>
 
 <p align="center">
-  <a href="https://claude.ai" title="Claude Code / Anthropic">
-    <img src="assets/logos/claude-code.svg" alt="Claude Code / Anthropic Logo" width="180" height="64" />
-  </a>
-  &nbsp;&nbsp;
-  <a href="https://www.kimi.com" title="Kimi">
-    <img src="assets/logos/kimi.svg" alt="Kimi Logo" width="180" height="64" />
-  </a>
-  &nbsp;&nbsp;
-  <a href="https://www.minimax.io" title="MiniMax">
-    <img src="assets/logos/minimax.svg" alt="MiniMax Logo" width="180" height="64" />
-  </a>
-  &nbsp;&nbsp;
-  <a href="https://ollama.com" title="Ollama">
-    <img src="assets/logos/ollama.svg" alt="Ollama Logo" width="180" height="64" />
-  </a>
+  <img src="assets/logos/claude-code.svg" alt="Claude Code / Anthropic Logo" width="56" height="56" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="assets/logos/kimi.svg" alt="Kimi Logo" width="220" height="74" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="assets/logos/minimax.svg" alt="MiniMax Logo" width="56" height="56" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="assets/logos/ollama.svg" alt="Ollama Logo" width="56" height="56" />
 </p>
 
 <p align="center">
