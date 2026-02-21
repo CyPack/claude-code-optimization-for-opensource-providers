@@ -11,10 +11,14 @@
       <img src="assets/logos/claude-code.svg" alt="Claude Logo" width="44" height="44" />
     </td>
     <td align="center" width="140">
-      <img src="assets/logos/kimi.svg" alt="Kimi Logo" width="92" height="31" />
+      <a href="https://www.kimi.com/membership/pricing">
+        <img src="assets/logos/kimi.svg" alt="Kimi Logo" width="92" height="31" />
+      </a>
     </td>
     <td align="center" width="120">
-      <img src="assets/logos/minimax.svg" alt="MiniMax Logo" width="44" height="44" />
+      <a href="https://platform.minimax.io/user-center/payment/coding-plan?cycle_type=1">
+        <img src="assets/logos/minimax.svg" alt="MiniMax Logo" width="44" height="44" />
+      </a>
     </td>
     <td align="center" width="120">
       <img src="assets/logos/ollama.svg" alt="Ollama Logo" width="44" height="44" />
@@ -35,6 +39,14 @@
   ·
   <a href="https://github.com/CyPack/claude-code-optimization-for-all-providers/blob/main/AGENTS.md">Agent Rules</a>
 </p>
+
+## Official Provider Links
+
+- MiniMax Coding Plan: `https://platform.minimax.io/user-center/payment/coding-plan?cycle_type=1`
+- MiniMax API Key: `https://platform.minimax.io/user-center/basic-information/interface-key`
+- MiniMax Claude Code Docs: `https://platform.minimax.io/docs/coding-plan/claude-code`
+- Kimi Pricing (Coding access): `https://www.kimi.com/membership/pricing`
+- Kimi Code Console: `https://www.kimi.com/code/console`
 
 ## Why This Repo
 
