@@ -19,6 +19,7 @@ This repo documents what was tested, what failed, what was fixed, and how to kee
 - Known `ToolSearch -> tool_reference` 400 path identified and mitigated.
 - Stable SOR upload path validated with `VoorinfraAPIServer`.
 - Scope guard documented so normal SOR upload flow does not touch `input/File case/` unless explicitly requested.
+- Autonomous orchestration rule added for commandless multi-agent spawn on complex tasks.
 
 ## Who This Is For
 
@@ -40,6 +41,7 @@ This repo documents what was tested, what failed, what was fixed, and how to kee
 - `docs/ACTIONS_LOG.md`: step-by-step operational history
 - `docs/LESSONS.md`: troubleshooting playbook and anti-regression lessons
 - `docs/BACKUPS.md`: backup artifacts and restore snippets
+- `docs/SWARM_OPTIMIZATION.md`: Kimi-specific swarm/spawn/orchestration tuning
 - `RELEASE_NOTES.md`: change history for this repository
 - `AGENTS.md`: explicit instructions and constraints for AI agents
 - `agent-manifest.json`: machine-readable capability/profile metadata

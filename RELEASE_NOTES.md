@@ -1,5 +1,23 @@
 # Release Notes
 
+## v1.2.0 - 2026-02-21
+
+### Added
+
+- Synced latest sanitized `kimi-ops` docs:
+  - `docs/README.md`
+  - `docs/ACTIONS_LOG.md`
+  - `docs/LESSONS.md`
+  - `docs/BACKUPS.md`
+  - `docs/SWARM_OPTIMIZATION.md` (new)
+- Documented commandless autonomous orchestration mode in repository content.
+- Updated top-level `README.md` repo map and outcomes.
+
+### Notes
+
+- No credentials or tokens added.
+- Paths remain normalized with `$HOME` placeholder.
+
 ## v1.1.0 - 2026-02-21
 
 ### Added

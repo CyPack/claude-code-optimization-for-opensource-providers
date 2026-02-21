@@ -59,6 +59,27 @@ Date: 2026-02-21
      - If user does not say `"file case"` / `"dosya case"`, do not inspect that folder.
   2. For generic request, execute only `batch_upload()` default main input flow.
 
+## Lesson 7: 10-Agent Swarm'da "Completed" != "Results Collected"
+
+- Symptom: "Agents Completed: 10" ama detaylı sonuç yalnızca bir kısmı geliyor.
+- Cause:
+  1. `TaskOutput` yanlış ID ile çağrılıyor (synthetic name yerine gerçek `agentId` gerekli)
+  2. Çoklu sibling `TaskOutput` çağrısı zincir hatası üretebiliyor
+- Fix:
+  1. Her `Task` sonucundan gerçek `agentId` sakla
+  2. `TaskOutput` çağrılarını `agentId` ile yap
+  3. Çıktı toplamayı sequential veya küçük batch + retry ile yap
+  4. Tüm output toplanmadıysa `PARTIAL` de, `SUCCESS` deme
+
+## Lesson 8: Kimi Swarm İçin ToolSearch'i Tamamen Kapat
+
+- Symptom: Arada orchestration sırasında beklenmedik request path sapmaları
+- Cause: Tool discovery akışı Kimi endpoint ile bazı senaryolarda kırılgan
+- Fix:
+  1. `ENABLE_TOOL_SEARCH=0`
+  2. `permissions.deny` içinde `ToolSearch` kalmalı
+  3. Orchestration için `/custom:kimi-swarm` protokolünü kullan
+
 ## Quick Health Commands
 
 ```bash
@@ -67,5 +88,6 @@ jq '.env | {ANTHROPIC_BASE_URL, ANTHROPIC_API_KEY_set: has("ANTHROPIC_API_KEY")}
 jq '{model, env: (.env | {ANTHROPIC_DEFAULT_HAIKU_MODEL, ANTHROPIC_DEFAULT_SONNET_MODEL, CLAUDE_CODE_SUBAGENT_MODEL})}' $HOME/.claude/settings.json
 claude -p "One line: model id only" --output-format text
 jq '.permissions | {allow, deny}' $HOME/.claude/settings.json
+jq '.env.ENABLE_TOOL_SEARCH' $HOME/.claude/settings.json
 claude -p "SOR dosyalarini yukle. File case'e dokunma." --dangerously-skip-permissions
 ```

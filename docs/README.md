@@ -4,8 +4,6 @@ Last updated: 2026-02-21
 
 This folder records the Kimi setup, backups, and troubleshooting notes for your local CLI setup.
 
-> Note: Paths are sanitized and may reference `$HOME` placeholders from the source environment snapshot.
-
 ## Current Effective State
 
 - `claude auth status`: logged out (`loggedIn: false`)
@@ -22,6 +20,9 @@ This folder records the Kimi setup, backups, and troubleshooting notes for your 
 - Latest verification after permanent mitigation:
   `2313DH_1_V1.SOR` processed without 400 (already uploaded, skipped as expected)
 - Scope rule enforced: generic `"SOR dosyalarini yukle"` flow must not touch `input/File case/`
+- Swarm optimization applied for Kimi:
+  - `ENABLE_TOOL_SEARCH=0`
+  - `/custom:kimi-swarm` command added for robust 10-agent orchestration
 
 ## MCP Snapshot (Relevant)
 
@@ -43,6 +44,7 @@ This folder records the Kimi setup, backups, and troubleshooting notes for your 
 - `$HOME/kimi-ops/ACTIONS_LOG.md`
 - `$HOME/kimi-ops/BACKUPS.md`
 - `$HOME/kimi-ops/LESSONS.md`
+- `$HOME/kimi-ops/SWARM_OPTIMIZATION.md`
 
 ## Stable Runtime Patterns (Kimi)
 

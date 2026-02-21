@@ -11,6 +11,7 @@ Date: 2026-02-21
 
 3. `$HOME/.claude/backups/settings.json.20260221-105733.bak`
 4. `$HOME/.claude/backups/settings.json.20260221-110129.pre-toolsearch-disable.bak`
+5. `$HOME/.claude/backups/settings.json.20260221-115839.pre-swarm-opt.bak`
 
 ## Files Included In Each Backup
 
@@ -45,4 +46,8 @@ cp -f $HOME/.claude/backups/settings.json.20260221-105733.bak $HOME/.claude/sett
 
 ```bash
 cp -f $HOME/.claude/backups/settings.json.20260221-110129.pre-toolsearch-disable.bak $HOME/.claude/settings.json
+```
+
+```bash
+cp -f $HOME/.claude/backups/settings.json.20260221-115839.pre-swarm-opt.bak $HOME/.claude/settings.json
 ```

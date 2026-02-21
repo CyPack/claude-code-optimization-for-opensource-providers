@@ -52,6 +52,19 @@ Date: 2026-02-21
     - `claude -p "SOR dosyalarini yukle. File case'e dokunma..." --dangerously-skip-permissions`
     - Result: completed without 400
     - File result: `2313DH_1_V1.SOR` => skipped (already uploaded), `failed: 0`
+19. Applied Kimi swarm optimization profile:
+    - `ENABLE_TOOL_SEARCH` changed from `auto:1` to `0` in `$HOME/.claude/settings.json`
+20. Added custom robust orchestration command:
+    - `$HOME/.claude/commands/custom/kimi-swarm.md`
+    - Focus: real `agentId` tracking + resilient `TaskOutput` collection
+21. Added optimization runbook:
+    - `$HOME/kimi-ops/SWARM_OPTIMIZATION.md`
+22. Created pre-change backup before swarm optimization:
+    - `$HOME/.claude/backups/settings.json.20260221-115839.pre-swarm-opt.bak`
+23. Added global autonomous orchestration rule:
+    - `$HOME/.claude/rules/autonomous-orchestration.md`
+    - Goal: commandless auto-spawn for complex tasks and explicit "agent spawn" requests
+24. Updated swarm optimization runbook to include commandless autonomous mode.
 
 ## Important Notes
 
