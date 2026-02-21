@@ -1,28 +1,28 @@
-# Kimi Ops Dossier
+# Provider Ops Dossier
 
 Last updated: 2026-02-21
 
-This folder records the Kimi setup, backups, and troubleshooting notes for your local CLI setup.
+This folder records provider switching setup, backups, and troubleshooting notes for local Claude Code CLI workflows.
 
 ## Current Effective State
 
 - `claude auth status`: logged out (`loggedIn: false`)
-- Active provider base URL: `https://api.kimi.com/coding/`
-- API key is present in `~/.claude/settings.local.json` (stored, redacted here)
-- Default model pins are set to `kimi-for-coding` in `~/.claude/settings.json`
-- Runtime verification: `claude -p "One line: model id only"` returns `kimi-for-coding`
-- Known Kimi compatibility issue: `ToolSearch -> tool_reference` path can trigger
-  `API Error: 400 {"error":{"type":"invalid_request_error","message":"Invalid request Error"}}`
-- Permanent local mitigation applied: `ToolSearch` removed from allow and added to deny
-  in `$HOME/.claude/settings.json`
-- Last verified production action with workaround: `2313DH_1_V1.SOR` uploaded successfully
-  via `mcp__VoorinfraAPIServer__batch_upload` (opdracht_id `243160`)
-- Latest verification after permanent mitigation:
-  `2313DH_1_V1.SOR` processed without 400 (already uploaded, skipped as expected)
-- Scope rule enforced: generic `"SOR dosyalarini yukle"` flow must not touch `input/File case/`
-- Swarm optimization applied for Kimi:
-  - `ENABLE_TOOL_SEARCH=0`
-  - `/custom:kimi-swarm` command added for robust 10-agent orchestration
+- Active provider (latest validation): `zai`
+  - `ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic`
+  - `model=sonnet`
+  - default mapping: haiku=`GLM-4.5-Air`, sonnet/opus=`GLM-4.7`
+- Runtime verification (z.ai):
+  - `claude -p "Reply with exactly: zai_smoke_ok" --model sonnet` => `zai_smoke_ok`
+- Orchestration verification (z.ai):
+  - 4 parallel subagents spawned and completed in a single prompt (`Task` + `SubagentStart/SubagentStop` traces confirmed)
+- MCP verification (z.ai):
+  - `claude mcp list` succeeded
+  - `mcp__sequential-thinking__sequentialthinking` tool call succeeded
+- Worktree verification (z.ai tool-call flow):
+  - `git worktree add -> branch check -> cleanup` succeeded (`ADD=ok`, `CLEANUP=ok`)
+- Known Kimi compatibility issue still tracked:
+  - `ToolSearch -> tool_reference` path can trigger HTTP 400 on Kimi stack
+  - mitigation remains: disable `ToolSearch` for Kimi profile
 
 ## MCP Snapshot (Relevant)
 
@@ -42,17 +42,18 @@ This folder records the Kimi setup, backups, and troubleshooting notes for your 
 
 ## Documents In This Folder
 
-- `$HOME/kimi-ops/ACTIONS_LOG.md`
-- `$HOME/kimi-ops/BACKUPS.md`
-- `$HOME/kimi-ops/LESSONS.md`
-- `$HOME/kimi-ops/SWARM_OPTIMIZATION.md`
+- `docs/ACTIONS_LOG.md`
+- `docs/BACKUPS.md`
+- `docs/LESSONS.md`
+- `docs/SWARM_OPTIMIZATION.md`
 
 Additional repository docs:
 
 - `docs/SOURCES.md` (official source registry + update cadence)
 - `docs/OLLAMA_CLAUDE_CODE.md` (Ollama integration guide)
+- `docs/ZAI_CLAUDE_CODE.md` (z.ai integration guide)
 
-## Fast Provider Switching (Kimi <-> Claude <-> MiniMax <-> Ollama)
+## Fast Provider Switching (Kimi <-> Claude <-> MiniMax <-> z.ai <-> Ollama)
 
 - Script: `$HOME/.local/bin/cc-provider` (repo source: `scripts/cc-provider`)
 - Install:
@@ -64,12 +65,14 @@ Additional repository docs:
   - `cc-provider kimi`
   - `cc-provider claude`
   - `cc-provider minimax` (or `cc-provider mini`)
+  - `cc-provider zai`
   - `cc-provider ollama`
 - Convenience aliases:
   - `cc-kimi`
   - `cc-claude`
   - `cc-mini`
   - `cc-minimax`
+  - `cc-zai`
   - `cc-ollama`
 
 Behavior guarantees:
@@ -92,6 +95,15 @@ Behavior guarantees:
   - Uses `ANTHROPIC_AUTH_TOKEN` as primary credential var (fallback compatible with `ANTHROPIC_API_KEY`)
   - Keeps `ToolSearch` enabled
   - Restores saved MiniMax secrets from profile stash if available
+- Switching to `zai`:
+  - Applies z.ai Anthropic-compatible URL default (`https://api.z.ai/api/anthropic`, configurable via `ZAI_BASE_URL_DEFAULT`)
+  - Uses `ANTHROPIC_AUTH_TOKEN` as primary credential var
+  - Applies model mapping defaults:
+    - haiku=`GLM-4.5-Air`
+    - sonnet=`GLM-4.7`
+    - opus=`GLM-4.7`
+  - Keeps `ToolSearch` enabled
+  - Restores saved z.ai URL/token from profile stash if available
 - Switching to `ollama`:
   - Applies `qwen3-coder` model pins (configurable via `OLLAMA_MODEL`)
   - Applies Ollama Anthropic-compatible URL default (`http://localhost:11434/anthropic`, configurable via `OLLAMA_BASE_URL_DEFAULT`)
@@ -99,7 +111,18 @@ Behavior guarantees:
   - Keeps `ToolSearch` enabled
   - Restores saved Ollama URL/token from profile stash if available
 
-## Stable Runtime Patterns (Kimi)
+## Stable Runtime Patterns
+
+z.ai smoke pattern:
+
+```bash
+token="$(jq -r '.env.ANTHROPIC_AUTH_TOKEN // empty' $HOME/.claude/settings.local.json)"
+base="$(jq -r '.env.ANTHROPIC_BASE_URL // empty' $HOME/.claude/settings.local.json)"
+ANTHROPIC_AUTH_TOKEN="$token" ANTHROPIC_BASE_URL="$base" \
+  claude -p "Reply with exactly: zai_ok" --model sonnet
+```
+
+Kimi SOR pattern:
 
 ```bash
 # Current default already denies ToolSearch in settings.json

@@ -4,7 +4,7 @@ This file makes the repository easier for AI agents to consume safely.
 
 ## Mission
 
-Understand, validate, and maintain stable Claude Code provider switching workflows (`kimi`, `minimax`, `ollama`, `claude`) using the documents in this repository.
+Understand, validate, and maintain stable Claude Code provider switching workflows (`kimi`, `minimax`, `zai`, `ollama`, `claude`) using the documents in this repository.
 
 ## Priority Read Order
 
@@ -14,8 +14,9 @@ Understand, validate, and maintain stable Claude Code provider switching workflo
 4. `docs/ACTIONS_LOG.md`
 5. `docs/SOURCES.md`
 6. `docs/OLLAMA_CLAUDE_CODE.md`
-7. `docs/BACKUPS.md`
-8. `RELEASE_NOTES.md`
+7. `docs/ZAI_CLAUDE_CODE.md`
+8. `docs/BACKUPS.md`
+9. `RELEASE_NOTES.md`
 
 ## Ground Truth Files
 
@@ -28,9 +29,9 @@ Understand, validate, and maintain stable Claude Code provider switching workflo
 ## Key Operational Facts
 
 - Model target: `kimi-for-coding`
-- Switch utility: `scripts/cc-provider` (`status`, `kimi`, `claude`, `minimax`, `ollama`)
+- Switch utility: `scripts/cc-provider` (`status`, `kimi`, `claude`, `minimax`, `zai`, `ollama`)
 - Known issue: `ToolSearch -> tool_reference` may produce HTTP 400 on this stack.
-- Stable mitigation: keep `ToolSearch` disabled for this workflow.
+- Stable mitigation (Kimi-specific): keep `ToolSearch` disabled for this workflow.
 - SOR default scope: normal upload flow should not touch `input/File case/` unless user explicitly asks for file case flow.
 
 ## Agent Task Checklist
@@ -45,7 +46,7 @@ Understand, validate, and maintain stable Claude Code provider switching workflo
 
 For provider-switch intent, use this exact flow:
 
-1. Run one command: `cc-provider kimi|claude|minimax|ollama`
+1. Run one command: `cc-provider kimi|claude|minimax|zai|ollama`
 2. Run `cc-provider status`
 3. Return profile + model + ToolSearch state
 4. If API key missing warning appears, report it without fabricating credentials

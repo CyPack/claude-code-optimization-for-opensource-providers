@@ -21,6 +21,7 @@ Installed commands:
 - `cc-claude`
 - `cc-mini`
 - `cc-minimax`
+- `cc-zai`
 - `cc-ollama`
 
 ## Option B: One-Command Install (Remote)
@@ -61,6 +62,7 @@ Switch examples:
 cc-provider kimi
 cc-provider claude
 cc-provider minimax
+cc-provider zai
 cc-provider ollama
 ```
 
@@ -73,7 +75,7 @@ Output behavior:
 
 Any CLI/agent can call these commands directly. Recommended minimal protocol:
 
-1. Run one switch command (`kimi`, `claude`, `minimax`, `ollama`).
+1. Run one switch command (`kimi`, `claude`, `minimax`, `zai`, `ollama`).
 2. Run `cc-provider status` immediately.
 3. Parse and log profile/model/toolsearch state.
 
@@ -85,6 +87,7 @@ rm -f "$HOME/.local/bin/cc-provider" \
       "$HOME/.local/bin/cc-claude" \
       "$HOME/.local/bin/cc-mini" \
       "$HOME/.local/bin/cc-minimax" \
+      "$HOME/.local/bin/cc-zai" \
       "$HOME/.local/bin/cc-ollama"
 ```
 

@@ -1,5 +1,38 @@
 # Release Notes
 
+## v1.9.1 - 2026-02-21
+
+### Fixed
+
+- z.ai profile self-heal when provider is already active but stale model pins remain:
+  - prevents `Unknown Model (1211)` caused by old `ANTHROPIC_MODEL` values.
+- z.ai switch now clears stale local model-pin env keys before applying GLM mapping.
+
+### Verified
+
+- z.ai smoke call in Claude Code print mode:
+  - `zai_smoke_ok`
+- 4-way parallel sub-agent spawn in one prompt with full result collection.
+- MCP tool usage (`mcp__sequential-thinking__sequentialthinking`) with debug evidence.
+- Git worktree lifecycle via model tool-call (`add -> verify branch -> cleanup`).
+
+## v1.9.0 - 2026-02-21
+
+### Added
+
+- z.ai provider switch support:
+  - `cc-provider zai`
+  - `cc-zai` alias
+- z.ai integration guide:
+  - `docs/ZAI_CLAUDE_CODE.md`
+- z.ai brand logo in README hero with API key page redirect.
+
+### Changed
+
+- `scripts/cc-provider` now supports `Kimi <-> Claude <-> MiniMax <-> z.ai <-> Ollama`.
+- Installer scripts include `cc-zai`.
+- Source registry includes official z.ai docs and API key references.
+
 ## v1.8.0 - 2026-02-21
 
 ### Added

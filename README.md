@@ -2,7 +2,7 @@
 
 <p align="center">
   <strong>Human + Agent Friendly Provider Switching for Claude Code</strong><br/>
-  Kimi • Claude • MiniMax • Ollama-aware workflows with credential-safe setup.
+  Kimi • Claude • MiniMax • z.ai • Ollama-aware workflows with credential-safe setup.
 </p>
 
 <table align="center">
@@ -21,6 +21,11 @@
       </a>
     </td>
     <td align="center" width="120">
+      <a href="https://z.ai/manage-apikey/apikey-list">
+        <img src="assets/logos/zai.svg" alt="z.ai Logo" width="44" height="44" />
+      </a>
+    </td>
+    <td align="center" width="120">
       <a href="https://ollama.com">
         <img src="assets/logos/ollama.svg" alt="Ollama Logo" width="44" height="44" />
       </a>
@@ -30,6 +35,7 @@
     <td align="center"><sub><strong>Claude</strong></sub></td>
     <td align="center"><sub><strong>Kimi</strong></sub></td>
     <td align="center"><sub><strong>MiniMax</strong></sub></td>
+    <td align="center"><sub><strong>z.ai</strong></sub></td>
     <td align="center"><sub><strong>Ollama</strong></sub></td>
   </tr>
 </table>
@@ -49,6 +55,9 @@
 - MiniMax Claude Code Docs: `https://platform.minimax.io/docs/coding-plan/claude-code`
 - Kimi Pricing (Coding access): `https://www.kimi.com/membership/pricing`
 - Kimi Code Console: `https://www.kimi.com/code/console`
+- z.ai API Key: `https://z.ai/manage-apikey/apikey-list`
+- z.ai Claude Code Docs: `https://docs.z.ai/scenario-example/develop-tools/claude`
+- z.ai Coding FAQ: `https://docs.z.ai/devpack/faq`
 - Ollama Anthropic Compatibility: `https://docs.ollama.com/openai#anthropic-compatibility`
 - Ollama Claude Code Integration: `https://docs.ollama.com/integrations/claude-code`
 - Ollama Claude Code Launch Post: `https://ollama.com/blog/claude-code`
@@ -82,6 +91,7 @@ cc-provider status
 cc-provider kimi
 cc-provider claude
 cc-provider minimax
+cc-provider zai
 cc-provider ollama
 ```
 
@@ -101,6 +111,7 @@ cc-kimi
 cc-claude
 cc-mini
 cc-minimax
+cc-zai
 cc-ollama
 ```
 
@@ -118,7 +129,7 @@ cc-ollama
 
 Agents should follow this protocol:
 
-1. Run `cc-provider <kimi|claude|minimax|ollama>`.
+1. Run `cc-provider <kimi|claude|minimax|zai|ollama>`.
 2. Run `cc-provider status`.
 3. Return profile, model, ToolSearch state, and transition summary.
 4. If API/auth token warning appears, report warning without inventing credentials.
@@ -132,6 +143,7 @@ Agents should follow this protocol:
 - `docs/ACTIONS_LOG.md`: chronological change evidence
 - `docs/SOURCES.md`: source registry for future updates
 - `docs/OLLAMA_CLAUDE_CODE.md`: Ollama + Claude Code integration guide
+- `docs/ZAI_CLAUDE_CODE.md`: z.ai + Claude Code integration guide
 - `docs/BACKUPS.md`: backup and restore references
 - `docs/SWARM_OPTIMIZATION.md`: Kimi-specific orchestration notes
 - `scripts/cc-provider`: main switch utility
@@ -148,11 +160,14 @@ Agents should follow this protocol:
 - Provider secrets are kept in local profile files (not committed):
   - `~/.claude/profiles/kimi-secrets.json`
   - `~/.claude/profiles/minimax-secrets.json`
+  - `~/.claude/profiles/zai-secrets.json`
+  - `~/.claude/profiles/ollama-secrets.json`
 
 ## Compatibility Notes
 
 - Kimi profile defaults to ToolSearch disabled for known compatibility reasons.
 - MiniMax profile keeps ToolSearch enabled by default.
 - MiniMax profile defaults to `MiniMax-M2.5` and `https://api.minimax.io/anthropic`.
+- z.ai profile defaults to `GLM-4.7` mapping and `https://api.z.ai/api/anthropic`.
 - Ollama profile defaults to `qwen3-coder` and `http://localhost:11434/anthropic`.
 - Claude profile removes active API-key/auth-token routing vars to reduce auth conflicts.

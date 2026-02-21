@@ -10,6 +10,7 @@ BACKUPS_DIR="$CLAUDE_DIR/backups"
 KIMI_SECRETS_FILE="$PROFILES_DIR/kimi-secrets.json"
 MINIMAX_SECRETS_FILE="$PROFILES_DIR/minimax-secrets.json"
 OLLAMA_SECRETS_FILE="$PROFILES_DIR/ollama-secrets.json"
+ZAI_SECRETS_FILE="$PROFILES_DIR/zai-secrets.json"
 
 KIMI_MODEL="${KIMI_MODEL:-kimi-for-coding}"
 KIMI_BASE_URL_DEFAULT="${KIMI_BASE_URL_DEFAULT:-https://api.kimi.com/coding/}"
@@ -21,6 +22,12 @@ OLLAMA_MODEL="${OLLAMA_MODEL:-qwen3-coder}"
 OLLAMA_BASE_URL_DEFAULT="${OLLAMA_BASE_URL_DEFAULT:-http://localhost:11434/anthropic}"
 OLLAMA_AUTH_TOKEN_DEFAULT="${OLLAMA_AUTH_TOKEN_DEFAULT:-ollama}"
 
+ZAI_BASE_URL_DEFAULT="${ZAI_BASE_URL_DEFAULT:-https://api.z.ai/api/anthropic}"
+ZAI_HAIKU_MODEL="${ZAI_HAIKU_MODEL:-GLM-4.5-Air}"
+ZAI_SONNET_MODEL="${ZAI_SONNET_MODEL:-GLM-4.7}"
+ZAI_OPUS_MODEL="${ZAI_OPUS_MODEL:-GLM-4.7}"
+ZAI_CLAUDE_MODEL="${ZAI_CLAUDE_MODEL:-sonnet}"
+
 print_usage() {
   cat <<'USAGE'
 Usage:
@@ -30,6 +37,7 @@ Usage:
   cc-provider minimax
   cc-provider mini
   cc-provider ollama
+  cc-provider zai
 
 Aliases:
   cc-kimi
@@ -37,6 +45,7 @@ Aliases:
   cc-mini
   cc-minimax
   cc-ollama
+  cc-zai
 USAGE
 }
 
@@ -129,13 +138,18 @@ current_provider_guess() {
     return 0
   fi
 
-  if [[ "$model" == "$MINIMAX_MODEL" || "$model_pin" == "$MINIMAX_MODEL" ]] || [[ "$base_url" == *"minimax"* ]]; then
-    echo "minimax"
+  if [[ "$base_url" == *"api.z.ai"* ]]; then
+    echo "zai"
     return 0
   fi
 
   if [[ "$model" == "$OLLAMA_MODEL" || "$model_pin" == "$OLLAMA_MODEL" ]] || [[ "$base_url" == *"11434/anthropic"* ]]; then
     echo "ollama"
+    return 0
+  fi
+
+  if [[ "$model" == "$MINIMAX_MODEL" || "$model_pin" == "$MINIMAX_MODEL" ]] || [[ "$base_url" == *"minimax"* ]]; then
+    echo "minimax"
     return 0
   fi
 
@@ -145,6 +159,34 @@ current_provider_guess() {
   fi
 
   echo "unknown"
+}
+
+zai_profile_is_fresh() {
+  local model
+  local base_url
+  local model_pin
+  local small_model_pin
+  local haiku_model
+  local sonnet_model
+  local opus_model
+
+  model="$(current_model)"
+  base_url="$(active_base_url)"
+  model_pin="$(jq -r '.env.ANTHROPIC_MODEL // empty' "$SETTINGS_FILE")"
+  small_model_pin="$(jq -r '.env.ANTHROPIC_SMALL_FAST_MODEL // empty' "$SETTINGS_FILE")"
+  haiku_model="$(jq -r '.env.ANTHROPIC_DEFAULT_HAIKU_MODEL // empty' "$SETTINGS_FILE")"
+  sonnet_model="$(jq -r '.env.ANTHROPIC_DEFAULT_SONNET_MODEL // empty' "$SETTINGS_FILE")"
+  opus_model="$(jq -r '.env.ANTHROPIC_DEFAULT_OPUS_MODEL // empty' "$SETTINGS_FILE")"
+
+  [[ "$model" == "$ZAI_CLAUDE_MODEL" ]] || return 1
+  [[ "$base_url" == *"api.z.ai"* ]] || return 1
+  [[ -z "$model_pin" ]] || return 1
+  [[ -z "$small_model_pin" ]] || return 1
+  [[ "$haiku_model" == "$ZAI_HAIKU_MODEL" ]] || return 1
+  [[ "$sonnet_model" == "$ZAI_SONNET_MODEL" ]] || return 1
+  [[ "$opus_model" == "$ZAI_OPUS_MODEL" ]] || return 1
+
+  return 0
 }
 
 fmt_value() {
@@ -235,6 +277,9 @@ save_active_provider_secrets() {
     ;;
   ollama)
     stash_secrets "$OLLAMA_SECRETS_FILE" "$auth_token" "$base_url"
+    ;;
+  zai)
+    stash_secrets "$ZAI_SECRETS_FILE" "$auth_token" "$base_url"
     ;;
   *)
     ;;
@@ -560,6 +605,103 @@ MSG
   print_transition_notice "$previous_provider" "$previous_base_url"
 }
 
+switch_to_zai() {
+  mkdir -p "$CLAUDE_DIR"
+  ensure_json_file "$SETTINGS_FILE"
+  ensure_json_file "$LOCAL_FILE"
+
+  local previous_provider
+  local previous_model
+  local previous_base_url
+  local backup_dir
+  local current_provider
+  local auth_token
+  local base_url
+
+  previous_provider="$(current_provider_guess)"
+  previous_model="$(current_model)"
+  previous_base_url="$(active_base_url)"
+
+  if [[ "$previous_provider" == "zai" ]]; then
+    if zai_profile_is_fresh; then
+      print_already_active_notice "zai" "$previous_model" "$previous_base_url"
+      return 0
+    fi
+    echo "z.ai profile already active, but stale model pins detected. Reapplying profile settings..."
+  fi
+
+  backup_dir="$(backup_current)"
+  current_provider="$(current_provider_guess)"
+
+  save_active_provider_secrets
+
+  if [[ "$current_provider" == "zai" ]]; then
+    auth_token="$(active_auth_token)"
+    base_url="$(active_base_url)"
+  else
+    auth_token="$(restore_secret "$ZAI_SECRETS_FILE" "ANTHROPIC_AUTH_TOKEN")"
+    if [[ -z "$auth_token" ]]; then
+      auth_token="$(restore_secret "$ZAI_SECRETS_FILE" "ANTHROPIC_API_KEY")"
+    fi
+    base_url="$(restore_secret "$ZAI_SECRETS_FILE" "ANTHROPIC_BASE_URL")"
+  fi
+
+  if [[ -z "$base_url" ]]; then
+    base_url="$ZAI_BASE_URL_DEFAULT"
+  fi
+
+  write_json_args "$LOCAL_FILE" '
+    .env = (.env // {})
+    | .env.ANTHROPIC_BASE_URL = $base_url
+    | .env |= with_entries(select(.key != "ANTHROPIC_MODEL" and .key != "ANTHROPIC_SMALL_FAST_MODEL"))
+    | if $auth_token == "" then
+        (.env |= with_entries(select(.key != "ANTHROPIC_AUTH_TOKEN" and .key != "ANTHROPIC_API_KEY")))
+      else
+        (.env.ANTHROPIC_AUTH_TOKEN = $auth_token)
+        | (.env |= with_entries(select(.key != "ANTHROPIC_API_KEY")))
+      end
+  ' --arg auth_token "$auth_token" --arg base_url "$base_url"
+
+  write_json_args "$SETTINGS_FILE" '
+    def add_once($x): if index($x) == null then . + [$x] else . end;
+    .model = $claude_model
+    | .env = (.env // {})
+    | .env.ENABLE_TOOL_SEARCH = "auto:1"
+    | .env |= with_entries(select(.key != "ANTHROPIC_MODEL" and .key != "ANTHROPIC_SMALL_FAST_MODEL"))
+    | .env.ANTHROPIC_DEFAULT_HAIKU_MODEL = $haiku_model
+    | .env.ANTHROPIC_DEFAULT_SONNET_MODEL = $sonnet_model
+    | .env.ANTHROPIC_DEFAULT_OPUS_MODEL = $opus_model
+    | .env.CLAUDE_CODE_SUBAGENT_MODEL = $sonnet_model
+    | .permissions = (.permissions // {})
+    | .permissions.allow = ((.permissions.allow // []) | add_once("ToolSearch"))
+    | .permissions.deny = ((.permissions.deny // []) | map(select(. != "ToolSearch")))
+  ' \
+    --arg claude_model "$ZAI_CLAUDE_MODEL" \
+    --arg haiku_model "$ZAI_HAIKU_MODEL" \
+    --arg sonnet_model "$ZAI_SONNET_MODEL" \
+    --arg opus_model "$ZAI_OPUS_MODEL"
+
+  if [[ -z "$auth_token" ]]; then
+    cat <<WARN
+Switched to z.ai profile.
+Backup: $backup_dir
+Warning: No z.ai auth token found in active config or saved profile.
+Set ANTHROPIC_AUTH_TOKEN manually for z.ai endpoint before using Claude Code.
+WARN
+  else
+    cat <<MSG
+Switched to z.ai profile.
+Backup: $backup_dir
+Notes:
+- z.ai Anthropic-compatible endpoint and model mapping were applied.
+- Default mapping: haiku=$ZAI_HAIKU_MODEL, sonnet=$ZAI_SONNET_MODEL, opus=$ZAI_OPUS_MODEL
+- For GLM-5 (if your plan supports it), set ZAI_SONNET_MODEL=GLM-5 and/or ZAI_OPUS_MODEL=GLM-5 before switching.
+MSG
+  fi
+
+  print_transition_notice "$previous_provider" "$previous_base_url"
+}
+
 status() {
   ensure_json_file "$SETTINGS_FILE"
   ensure_json_file "$LOCAL_FILE"
@@ -597,6 +739,7 @@ Provider Status
 - kimi secrets stash: $KIMI_SECRETS_FILE
 - minimax secrets stash: $MINIMAX_SECRETS_FILE
 - ollama secrets stash: $OLLAMA_SECRETS_FILE
+- z.ai secrets stash: $ZAI_SECRETS_FILE
 MSG
 
   if command -v claude >/dev/null 2>&1; then
@@ -629,6 +772,9 @@ main() {
     ;;
   ollama)
     switch_to_ollama
+    ;;
+  zai|glm)
+    switch_to_zai
     ;;
   -h|--help|help)
     print_usage

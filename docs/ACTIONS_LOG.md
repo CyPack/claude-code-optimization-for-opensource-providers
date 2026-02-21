@@ -99,9 +99,42 @@ Date: 2026-02-21
 36. Added dedicated Ollama integration documentation:
     - `docs/OLLAMA_CLAUDE_CODE.md`
     - Updated top-level README and install/profile docs for Ollama flow
+37. Added z.ai provider support end-to-end:
+    - New command: `cc-provider zai`
+    - New alias: `cc-zai`
+    - New guide: `docs/ZAI_CLAUDE_CODE.md`
+    - Added z.ai logo and API key link in README hero
+38. Added z.ai source governance references:
+    - z.ai Claude Code docs
+    - z.ai FAQ
+    - z.ai API key page
+39. Fixed z.ai stale-pin edge case in switch logic:
+    - Added `zai_profile_is_fresh()` in `scripts/cc-provider`
+    - If z.ai is active but stale model pins exist, switch now re-applies profile instead of no-op
+40. Re-validated idempotent switch behavior:
+    - `cc-provider zai` now returns clean no-op when profile is truly fresh
+    - `cc-provider claude` -> `cc-provider zai` transition summary verified
+41. Verified z.ai runtime auth/model smoke (API route):
+    - Inline env export from local settings used for `claude -p` tests
+    - `claude -p "Reply with exactly: zai_smoke_ok" --model sonnet` => `zai_smoke_ok`
+42. Verified multi-agent orchestration under z.ai:
+    - Spawned 4 parallel subagents in one prompt
+    - All 4 completed with collected results
+    - Debug evidence includes `Task`, `SubagentStart`, `SubagentStop` traces
+43. Verified MCP runtime under z.ai:
+    - `claude mcp list` executed successfully and reported server health
+    - Prompt-driven MCP tool call succeeded:
+      - `mcp__sequential-thinking__sequentialthinking`
+44. Verified worktree operations through tool-call flow:
+    - Model executed:
+      - `git worktree add /tmp/cc-zai-worktree-smoke -b cc-zai-wt-smoke`
+      - branch check
+      - cleanup remove + branch delete
+    - Final result: `ADD=ok`, `BRANCH=cc-zai-wt-smoke`, `CLEANUP=ok`
 
 ## Important Notes
 
 - No Kimi secret values are stored in this folder.
 - Your shared key in chat should be rotated later for security.
 - For Kimi + MCP-heavy workflows, keep `ToolSearch` disabled (now permanent in local settings).
+- For z.ai smoke tests in this environment, prefer inline command-scoped auth export from local settings.

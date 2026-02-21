@@ -15,6 +15,10 @@ When provider behavior changes, start from these links before modifying scripts/
 | MiniMax | Coding plan page | https://platform.minimax.io/user-center/payment/coding-plan?cycle_type=1 | Subscription/plan route used in onboarding docs | Monthly |
 | Kimi | Code console | https://www.kimi.com/code/console | Primary Kimi coding entrypoint | Monthly |
 | Kimi | Pricing page | https://www.kimi.com/membership/pricing | Plan and billing route used in onboarding docs | Monthly |
+| z.ai | Claude Code integration docs | https://docs.z.ai/scenario-example/develop-tools/claude | Official Claude Code env/model mapping for GLM coding plan | Monthly |
+| z.ai | Coding FAQ | https://docs.z.ai/devpack/faq | GLM-5 availability and mapping guidance across plans | Monthly |
+| z.ai | API key page | https://z.ai/manage-apikey/apikey-list | Where users create/revoke z.ai keys | Monthly |
+| z.ai | Model API landing | https://z.ai/model-api | Official model/api documentation entrypoint | Monthly |
 | Ollama | Anthropic compatibility docs | https://docs.ollama.com/openai#anthropic-compatibility | Official `ANTHROPIC_BASE_URL` + `ANTHROPIC_AUTH_TOKEN` method | Monthly |
 | Ollama | Claude Code integration docs | https://docs.ollama.com/integrations/claude-code | Official Claude Code + Ollama path (manual + launch flow) | Monthly |
 | Ollama | Claude Code launch announcement | https://ollama.com/blog/claude-code | Change signal for model recommendations and rollout details | Monthly |

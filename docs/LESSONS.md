@@ -149,6 +149,47 @@ Date: 2026-02-21
      - `ollama pull <model>`
      - `cc-provider status`
 
+## Lesson 15: z.ai "Already Active" Can Still Need Repair
+
+- Symptom: `cc-provider zai` says already active, but requests fail with:
+  `API Error: 400 {"error":{"code":"1211","message":"Unknown Model, please check the model code."}}`
+- Cause: stale `ANTHROPIC_MODEL` / `ANTHROPIC_SMALL_FAST_MODEL` pins (for example from MiniMax) can survive and override z.ai mapping.
+- Fix:
+  1. Add z.ai freshness check in `scripts/cc-provider`
+  2. If z.ai is detected but stale pins exist, auto-reapply profile
+  3. Ensure z.ai switch clears stale model-pin keys before applying GLM mapping
+
+## Lesson 16: `claude -p` API Route Needs Shell Token Export
+
+- Symptom: `claude -p ...` returns `Not logged in · Please run /login` even when `~/.claude/settings.local.json` contains API token/base URL.
+- Cause: print-mode API auth can depend on shell-exported env in this setup.
+- Fix:
+  1. Read token/base URL from local settings
+  2. Export inline only for command scope:
+     - `ANTHROPIC_AUTH_TOKEN=... ANTHROPIC_BASE_URL=... claude -p ...`
+  3. Keep secrets out of repository and logs
+
+## Lesson 17: Deterministic Worktree Validation Should Use Git Commands
+
+- Symptom: `claude --worktree <name> -p ...` can still show main path/branch in output.
+- Cause: print-mode session behavior may not expose persistent worktree isolation clearly.
+- Fix:
+  1. Validate worktree using explicit Bash flow:
+     - `git worktree add ...`
+     - `git -C <wt> branch --show-current`
+     - cleanup (`git worktree remove`, `git branch -D`)
+  2. Use model tool-call smoke test to verify end-to-end execution (`ADD=ok`, `CLEANUP=ok`)
+
+## Lesson 18: Multi-Agent and MCP Need Debug Evidence, Not Only Chat Text
+
+- Symptom: chat says "spawned/completed", but reliability is unclear.
+- Cause: result text alone can hide orchestration gaps.
+- Fix:
+  1. Run with `--debug-file`
+  2. For multi-agent, verify `Task` + `SubagentStart/SubagentStop` entries in logs
+  3. For MCP, verify concrete tool call line (example: `mcp__sequential-thinking__sequentialthinking`)
+  4. Record both human-readable result and debug proof in action log
+
 ## Quick Health Commands
 
 ```bash

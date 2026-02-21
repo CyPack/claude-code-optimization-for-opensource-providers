@@ -12,6 +12,7 @@ FILES=(
   "cc-mini"
   "cc-minimax"
   "cc-ollama"
+  "cc-zai"
 )
 
 fetch() {
@@ -56,7 +57,7 @@ cat <<MSG
 Installed switch scripts from GitHub.
 - Source: $REPO_RAW_BASE
 - Install dir: $INSTALL_DIR
-- Commands: cc-provider, cc-kimi, cc-claude, cc-mini, cc-minimax, cc-ollama
+- Commands: cc-provider, cc-kimi, cc-claude, cc-mini, cc-minimax, cc-ollama, cc-zai
 MSG
 
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then

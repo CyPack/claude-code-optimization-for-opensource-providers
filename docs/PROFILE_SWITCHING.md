@@ -1,6 +1,6 @@
 # Profile Switching Guide
 
-This guide documents the safe toggle flow between Kimi, Claude, MiniMax, and Ollama in Claude Code.
+This guide documents the safe toggle flow between Kimi, Claude, MiniMax, z.ai, and Ollama in Claude Code.
 
 ## Goals
 
@@ -18,6 +18,7 @@ This guide documents the safe toggle flow between Kimi, Claude, MiniMax, and Oll
   - `$HOME/.local/bin/cc-claude`
   - `$HOME/.local/bin/cc-mini`
   - `$HOME/.local/bin/cc-minimax`
+  - `$HOME/.local/bin/cc-zai`
   - `$HOME/.local/bin/cc-ollama`
 
 Install references:
@@ -34,6 +35,7 @@ cc-provider kimi
 cc-provider claude
 cc-provider minimax
 cc-provider mini
+cc-provider zai
 cc-provider ollama
 ```
 
@@ -59,7 +61,7 @@ cc-provider ollama
 - Backup path:
   - `$HOME/.claude/backups/provider-switch-YYYYmmdd-HHMMSS-XXXXXX/`
 - Saves Kimi key/base URL into:
-  - Provider-specific profile stash (`kimi`, `minimax`, or `ollama`) with permission `0600`
+  - Provider-specific profile stash (`kimi`, `minimax`, `zai`, or `ollama`) with permission `0600`
 - Updates active config:
   - `model = sonnet`
   - `ENABLE_TOOL_SEARCH = auto:1`
@@ -117,6 +119,21 @@ cc-provider ollama
   - `ANTHROPIC_BASE_URL = http://localhost:11434/anthropic` (override via `OLLAMA_BASE_URL_DEFAULT`)
   - Re-enables `ToolSearch` in permissions
 
+### `cc-provider zai`
+
+- Backs up the same files with a new timestamp.
+- Restores z.ai credentials from active config or z.ai profile stash.
+- Updates active config:
+  - `model = sonnet` (override via `ZAI_CLAUDE_MODEL`)
+  - `ENABLE_TOOL_SEARCH = auto:1`
+  - `ANTHROPIC_AUTH_TOKEN = <your_zai_api_key>`
+  - `ANTHROPIC_BASE_URL = https://api.z.ai/api/anthropic` (override via `ZAI_BASE_URL_DEFAULT`)
+  - `ANTHROPIC_DEFAULT_HAIKU_MODEL = GLM-4.5-Air` (override via `ZAI_HAIKU_MODEL`)
+  - `ANTHROPIC_DEFAULT_SONNET_MODEL = GLM-4.7` (override via `ZAI_SONNET_MODEL`)
+  - `ANTHROPIC_DEFAULT_OPUS_MODEL = GLM-4.7` (override via `ZAI_OPUS_MODEL`)
+  - `CLAUDE_CODE_SUBAGENT_MODEL = GLM-4.7`
+  - Re-enables `ToolSearch` in permissions
+
 ## Validation
 
 ```bash
@@ -132,6 +149,11 @@ claude auth status
   - Re-auth with your Kimi flow or set `ANTHROPIC_API_KEY` in local settings.
 - If `cc-provider minimax` warns about missing token:
   - Set `ANTHROPIC_AUTH_TOKEN` (MiniMax API key) in local settings and retry.
+- If `cc-provider zai` warns about missing token:
+  - Set `ANTHROPIC_AUTH_TOKEN` (z.ai API key) in local settings and retry.
+- If `claude -p` says `Not logged in` after switching to API providers:
+  - Run print-mode calls with command-scoped export from local settings:
+    - `ANTHROPIC_AUTH_TOKEN=... ANTHROPIC_BASE_URL=... claude -p "..."`
 - If `cc-provider ollama` works but requests fail:
   - Ensure `ollama serve` is running and your model is pulled (`ollama pull qwen3-coder`).
 - If Claude auth is needed after switching:
@@ -149,5 +171,9 @@ claude auth status
   - https://docs.ollama.com/openai#anthropic-compatibility
 - Ollama Claude Code integration docs:
   - https://docs.ollama.com/integrations/claude-code
+- z.ai Claude Code docs:
+  - https://docs.z.ai/scenario-example/develop-tools/claude
+- z.ai Coding FAQ:
+  - https://docs.z.ai/devpack/faq
 - Full source registry for this repo:
   - `docs/SOURCES.md`
