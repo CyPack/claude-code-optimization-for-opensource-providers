@@ -1,5 +1,22 @@
 # Release Notes
 
+## v1.5.0 - 2026-02-21
+
+### Added
+
+- Installer scripts for human/agent-friendly rollout:
+  - `scripts/install-switch.sh` (local clone install)
+  - `scripts/install-from-github.sh` (one-command remote install)
+- New install guide:
+  - `docs/INSTALLATION.md`
+
+### Changed
+
+- `README.md` quick start now includes one-command installer.
+- `docs/PROFILE_SWITCHING.md` now links installation methods.
+- `AGENTS.md` now includes explicit agent switch protocol.
+- `agent-manifest.json` upgraded to `1.5.0` with installer metadata.
+
 ## v1.4.0 - 2026-02-21
 
 ### Added

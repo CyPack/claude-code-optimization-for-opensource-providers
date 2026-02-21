@@ -50,6 +50,10 @@ This folder records the Kimi setup, backups, and troubleshooting notes for your 
 ## Fast Provider Switching (Kimi <-> Claude <-> MiniMax)
 
 - Script: `$HOME/.local/bin/cc-provider` (repo source: `scripts/cc-provider`)
+- Install:
+  - Local clone: `bash scripts/install-switch.sh`
+  - Remote one-command: `bash -c "$(curl -fsSL https://raw.githubusercontent.com/CyPack/kimi-claude-code-optimization/main/scripts/install-from-github.sh)"`
+  - Full guide: `docs/INSTALLATION.md`
 - Commands:
   - `cc-provider status`
   - `cc-provider kimi`

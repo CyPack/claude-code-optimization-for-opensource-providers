@@ -35,7 +35,12 @@ This repo documents what was tested, what failed, what was fixed, and how to kee
 3. Read `docs/ACTIONS_LOG.md` for chronology and validation evidence.
 4. Read `docs/BACKUPS.md` for backup and restore references.
 5. Check `AGENTS.md` and `agent-manifest.json` if you are an AI agent/tool.
-6. Use `scripts/cc-provider` (or install it as `cc-provider`) for one-command profile switch:
+6. Install switch commands:
+   - Local clone install:
+     - `bash scripts/install-switch.sh`
+   - One-command remote install:
+     - `bash -c "$(curl -fsSL https://raw.githubusercontent.com/CyPack/kimi-claude-code-optimization/main/scripts/install-from-github.sh)"`
+7. Use `scripts/cc-provider` (or installed `cc-provider`) for one-command profile switch:
    - `cc-provider status`
    - `cc-provider kimi`
    - `cc-provider claude`
@@ -49,16 +54,26 @@ This repo documents what was tested, what failed, what was fixed, and how to kee
 - `docs/BACKUPS.md`: backup artifacts and restore snippets
 - `docs/SWARM_OPTIMIZATION.md`: Kimi-specific swarm/spawn/orchestration tuning
 - `docs/PROFILE_SWITCHING.md`: safe Claude/Kimi/MiniMax switching and auth-conflict prevention
+- `docs/INSTALLATION.md`: install/uninstall and external CLI setup
 - `RELEASE_NOTES.md`: change history for this repository
 - `AGENTS.md`: explicit instructions and constraints for AI agents
 - `agent-manifest.json`: machine-readable capability/profile metadata
 - `llms.txt`: compact index for LLM retrieval workflows
+- `scripts/install-switch.sh`: local installer (clone-based)
+- `scripts/install-from-github.sh`: one-command installer (curl/wget)
 
 ## Security and Privacy
 
 - No API keys, tokens, passwords, or raw credentials are stored.
 - Absolute local paths are normalized to `$HOME` where possible.
 - This repository contains operational metadata, not secrets.
+
+## External CLI Friendly
+
+- Integration contract is command-only, no secret sharing:
+  1. `cc-provider <target>`
+  2. `cc-provider status`
+- Works for humans and agents in any shell-based CLI workflow.
 
 ## Limitations
 

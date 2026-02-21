@@ -38,6 +38,15 @@ Understand, validate, and maintain a stable `kimi-for-coding` + Claude Code + MC
 4. Add clear verification commands for every change.
 5. Update `RELEASE_NOTES.md` when behavior/docs change.
 
+## Agent Switch Protocol
+
+For provider-switch intent, use this exact flow:
+
+1. Run one command: `cc-provider kimi|claude|minimax`
+2. Run `cc-provider status`
+3. Return profile + model + ToolSearch state
+4. If API key missing warning appears, report it without fabricating credentials
+
 ## Non-Goals
 
 - Do not store API keys, tokens, or credential files.

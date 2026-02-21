@@ -19,6 +19,12 @@ This guide documents the safe toggle flow between Kimi, Claude, and MiniMax in C
   - `$HOME/.local/bin/cc-mini`
   - `$HOME/.local/bin/cc-minimax`
 
+Install references:
+
+- Local clone: `bash scripts/install-switch.sh`
+- One-command remote: `bash -c "$(curl -fsSL https://raw.githubusercontent.com/CyPack/kimi-claude-code-optimization/main/scripts/install-from-github.sh)"`
+- Full install guide: `docs/INSTALLATION.md`
+
 ## Commands
 
 ```bash
